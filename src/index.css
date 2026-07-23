@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ---- Dusk (default): soft candlelit parchment ---- */
+  :root {
+    --paper: 239 231 214; /* #EFE7D6 warm parchment */
+    --surface: 245 239 226; /* slightly lighter raised card */
+    --ink: 59 46 58; /* #3B2E3A twilight plum, used as text */
+    --muted: 110 92 107; /* #6E5C6B */
+    --line: 214 202 186; /* faint hairline */
+    --glow: 224 164 88; /* honey glow for shadows */
+    color-scheme: light;
+  }
+
+  /* ---- Bedtime mode: dim the room, warm the light ---- */
+  .dark {
+    --paper: 42 34 49; /* #2A2231 near-night */
+    --surface: 59 46 58; /* #3B2E3A raised */
+    --ink: 236 224 216; /* warm off-white text */
+    --muted: 176 158 172;
+    --line: 78 64 78;
+    --glow: 224 164 88;
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans;
+    background-image: radial-gradient(
+      120% 80% at 50% -10%,
+      rgb(var(--glow) / 0.08),
+      transparent 60%
+    );
+    background-attachment: fixed;
+    transition: background-color 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Reading text (poems, reflections) leans on the literary serif */
+  .prose-poem {
+    @apply font-display leading-relaxed;
+    font-optical-sizing: auto;
+  }
+
+  /* Visible keyboard focus everywhere — quality floor */
+  :focus-visible {
+    outline: 2px solid #e0a458;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
