@@ -34,12 +34,12 @@ const SECTIONS = [
   },
   {
     num: "4",
-    headTh: "แจ้งเอาเนื้อหาออก",
-    headEn: "Takedown",
+    headTh: "เนื้อหาที่แชร์และการแจ้งเตือน",
+    headEn: "Shared content & notices",
     bodyTh:
-      "หากเธอเป็นเจ้าของลิขสิทธิ์และพบเนื้อหาที่ละเมิดสิทธิ์ของเธอถูกเผยแพร่ผ่านบริการของเรา แจ้งได้ที่ [อีเมลติดต่อ] เราจะดำเนินการโดยเร็ว",
+      "ก่อนฝันเก็บทุกอย่างไว้ในเครื่องของผู้ใช้เอง เราไม่ได้จัดเก็บหรือเผยแพร่เนื้อหาของผู้ใช้บนเซิร์ฟเวอร์ของเรา ประโยคที่แชร์ออกไปเป็นการส่งจากเครื่องของผู้ใช้ไปยังปลายทางที่เขาเลือกโดยตรง ด้วยเหตุนี้เราจึงไม่สามารถลบหรือเรียกคืนเนื้อหาที่ผู้ใช้เก็บหรือแชร์ไปแล้วได้ หากเธอเป็นเจ้าของลิขสิทธิ์และมีข้อกังวล ติดต่อเราได้ที่ natchapmppd27@gmail.com เรายินดีช่วยเท่าที่อยู่ในความรับผิดชอบของเรา และจะพิจารณาปรับปรุงตัวแอปหากพบว่าจำเป็น",
     bodyEn:
-      "If you're a rights holder and find infringing content distributed through our service, contact [อีเมลติดต่อ] and we'll act promptly.",
+      "Kònfăn stores everything on the user's own device. We don't host or publish user content on our servers; shared lines are sent directly from the user's device to a destination they choose. Because of this, we cannot delete or recall content a user has kept or already shared. If you're a rights holder with a concern, contact us at natchapmppd27@gmail.com — we'll help within what's under our control and will consider changes to the app itself where warranted.",
   },
   {
     num: "5",
@@ -94,7 +94,7 @@ export function AboutView({ onBack }: AboutViewProps) {
       <div className="pt-4 border-t border-line space-y-1">
         <p className="font-sans text-xs text-muted">
           ปรับปรุงล่าสุด · Last updated:{" "}
-          <span className="italic opacity-60">[วันที่]</span>
+          <span className="italic">24 ก.ค. 2569 · 24 Jul 2025</span>
         </p>
         <p className="font-sans text-xs text-muted/60 leading-relaxed">
           ร่างนี้ยังไม่ผ่านการรีวิวจากนักกฎหมาย ก่อนเผยแพร่กับผู้ใช้จำนวนมากควรปรึกษาผู้เชี่ยวชาญด้านทรัพย์สินทางปัญญา/PDPA
