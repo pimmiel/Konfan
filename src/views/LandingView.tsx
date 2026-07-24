@@ -55,7 +55,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function LandingView({ onBegin, onAbout }: LandingViewProps) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-16 text-center gap-8">
+    <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center gap-8">
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}

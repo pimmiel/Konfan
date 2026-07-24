@@ -33,13 +33,38 @@ export function AppShell() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <StarField />
 
+      {/* Persistent header — visible on every page */}
+      <header className="flex items-center justify-between px-6 py-5 max-w-2xl mx-auto w-full shrink-0">
+        {page === "app" ? (
+          <button
+            onClick={() => setPage("landing")}
+            className="font-display text-lg text-ink hover:text-honey transition-colors duration-300 ease-calm"
+            aria-label="กลับหน้าหลัก"
+          >
+            ก่อนฝัน
+          </button>
+        ) : (
+          <span aria-hidden className="w-[1px]" />
+        )}
+        <Button
+          variant="quiet"
+          size="sm"
+          onClick={() => setBedtime((b) => !b)}
+          aria-pressed={bedtime}
+        >
+          {bedtime ? "🌙 โหมดก่อนนอน" : "🕯️ เปิดโหมดก่อนนอน"}
+        </Button>
+      </header>
+
+      {/* Page content */}
       <AnimatePresence mode="wait">
         {page === "landing" ? (
           <motion.div
             key="landing"
+            className="flex-1 flex flex-col"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -50,6 +75,7 @@ export function AppShell() {
         ) : page === "about" ? (
           <motion.div
             key="about"
+            className="flex-1"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -60,42 +86,25 @@ export function AppShell() {
         ) : (
           <motion.div
             key="app"
+            className="flex-1 flex flex-col"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={EASE}
           >
-            <header className="flex items-center justify-between px-6 py-5 max-w-2xl mx-auto">
-              <button
-                onClick={() => setPage("landing")}
-                className="font-display text-lg text-ink hover:text-honey transition-colors duration-300 ease-calm"
-                aria-label="กลับหน้าหลัก"
-              >
-                ก่อนฝัน
-              </button>
-              <Button
-                variant="quiet"
-                size="sm"
-                onClick={() => setBedtime((b) => !b)}
-                aria-pressed={bedtime}
-              >
-                {bedtime ? "🌙 โหมดก่อนนอน" : "🕯️ เปิดโหมดก่อนนอน"}
-              </Button>
-            </header>
-
             <AnimatePresence mode="wait">
               {view === "tonight" && (
-                <motion.div key="tonight" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
+                <motion.div key="tonight" className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
                   <TonightView />
                 </motion.div>
               )}
               {view === "library" && (
-                <motion.div key="library" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
+                <motion.div key="library" className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
                   <LibraryView />
                 </motion.div>
               )}
               {view === "history" && (
-                <motion.div key="history" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
+                <motion.div key="history" className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
                   <HistoryView />
                 </motion.div>
               )}
