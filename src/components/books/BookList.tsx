@@ -30,7 +30,7 @@ export function BookList({ books, onAddClick }: BookListProps) {
     <div className="flex flex-col gap-8">
       {reading.length > 0 && (
         <section className="flex flex-col gap-4">
-          <Eyebrow>กำลังอ่าน</Eyebrow>
+          <Eyebrow>กำลังอ่าน · Reading</Eyebrow>
           {reading.map((book, i) => (
             <BookCard key={book.id} book={book} index={i} />
           ))}
@@ -39,7 +39,7 @@ export function BookList({ books, onAddClick }: BookListProps) {
 
       {finished.length > 0 && (
         <section className="flex flex-col gap-4">
-          <Eyebrow>อ่านจบแล้ว</Eyebrow>
+          <Eyebrow>อ่านจบแล้ว · Finished</Eyebrow>
           {finished.map((book, i) => (
             <BookCard key={book.id} book={book} index={i} />
           ))}

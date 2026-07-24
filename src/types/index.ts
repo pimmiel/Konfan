@@ -28,6 +28,18 @@ export interface Book {
   totalPages?: number;
   status: "reading" | "finished";
   addedAt: number; // epoch ms
+  closingFeeling?: string;
+}
+
+export interface Passage {
+  id: string;
+  bookId: string;
+  text: string;
+  note?: string;
+  page?: number;
+  mood?: MoodKey;
+  createdAt: number;
+  lastSeenAt?: number;
 }
 
 export interface Poem {
@@ -37,6 +49,8 @@ export interface Poem {
   attribution: string; // e.g. "— บทกวีต้นฉบับ" (all bundled poems are original)
   moods: MoodKey[];
   lang: "th" | "en";
+  /** ID of the translation pair shown below the divider on PoemCard */
+  pairedWith?: string;
 }
 
 export interface MoodEntry {

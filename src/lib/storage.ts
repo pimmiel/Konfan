@@ -22,4 +22,6 @@ export const STORAGE_KEYS = {
   books: "konfan.books",
   moods: "konfan.moodEntries",
   theme: "konfan.bedtime",
+  passages: "konfan.passages",
+  activeBook: "konfan.activeBook",
 } as const;

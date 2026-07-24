@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export type View = "tonight" | "library";
+export type View = "tonight" | "library" | "history";
 
 interface NavProps {
   current: View;
@@ -10,6 +10,7 @@ interface NavProps {
 const tabs: { id: View; glyph: string; label: string }[] = [
   { id: "tonight", glyph: "🕯️", label: "คืนนี้" },
   { id: "library", glyph: "📚", label: "ชั้นหนังสือ" },
+  { id: "history", glyph: "🌙", label: "บันทึก" },
 ];
 
 export function Nav({ current, onChange }: NavProps) {
@@ -31,7 +32,7 @@ export function Nav({ current, onChange }: NavProps) {
               onClick={() => onChange(tab.id)}
               aria-current={active ? "page" : undefined}
               className={
-                "flex flex-col items-center gap-1 py-3 px-10 " +
+                "flex flex-1 flex-col items-center gap-1 py-3 " +
                 "font-sans text-xs transition-colors duration-300 ease-calm " +
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-honey " +
                 (active ? "text-honey font-medium" : "text-muted hover:text-ink")

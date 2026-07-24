@@ -44,6 +44,7 @@ export function MoodPicker({ selected, onSelect }: Props) {
                 {mood.glyph}
               </span>
               <span className="font-sans text-sm text-ink">{mood.labelTh}</span>
+              <span className="font-sans text-xs italic text-muted">{mood.labelEn}</span>
             </motion.button>
           );
         })}

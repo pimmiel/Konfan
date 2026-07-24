@@ -13,13 +13,18 @@ export const MOODS: Mood[] = [
 // IMPORTANT: every poem below is ORIGINAL, written for this project, so the
 // app ships without any licensing concerns. Replace/expand freely, but keep
 // bundled text original. (Do NOT paste poems by living poets into this file.)
+//
+// Convention: Thai poems (lang:"th") are the primary entries returned by
+// poemForMood(). Each links to its English translation via pairedWith.
 export const POEMS: Poem[] = [
+  // --- calm / weary ---
   {
     id: "p-calm-1",
     lines: ["วางวันไว้ตรงธรณีประตู", "ค่ำคืนไม่ต้องการอะไรจากเธอ", "นอกจากลมหายใจช้าๆ"],
     attribution: "— บทกวีต้นฉบับ",
     moods: ["calm", "weary"],
     lang: "th",
+    pairedWith: "p-calm-2",
   },
   {
     id: "p-calm-2",
@@ -28,12 +33,15 @@ export const POEMS: Poem[] = [
     moods: ["calm", "weary"],
     lang: "en",
   },
+
+  // --- tender ---
   {
     id: "p-tender-1",
     lines: ["ใจดีกับตัวเองสักหน่อย", "อย่างที่เธอใจดีกับหน้าหนังสือ", "ที่พับมุมไว้รอวันพรุ่งนี้"],
     attribution: "— บทกวีต้นฉบับ",
     moods: ["tender", "hopeful"],
     lang: "th",
+    pairedWith: "p-tender-2",
   },
   {
     id: "p-tender-2",
@@ -42,19 +50,32 @@ export const POEMS: Poem[] = [
     moods: ["tender"],
     lang: "en",
   },
+
+  // --- weary ---
   {
     id: "p-weary-1",
     lines: ["เหนื่อยก็พักได้", "ดวงดาวยังหมุนต่อ", "โดยไม่ต้องให้เธอช่วยถือ"],
     attribution: "— บทกวีต้นฉบับ",
     moods: ["weary", "restless"],
     lang: "th",
+    pairedWith: "p-weary-2",
   },
+  {
+    id: "p-weary-2",
+    lines: ["Rest when you're tired.", "The stars still turn", "without your help."],
+    attribution: "— original",
+    moods: ["weary", "restless"],
+    lang: "en",
+  },
+
+  // --- hopeful ---
   {
     id: "p-hopeful-1",
     lines: ["พรุ่งนี้เป็นหน้ากระดาษเปล่า", "ยังไม่มีใครเขียนอะไรลงไป", "แม้แต่ความกลัวของเธอ"],
     attribution: "— บทกวีต้นฉบับ",
     moods: ["hopeful", "restless"],
     lang: "th",
+    pairedWith: "p-hopeful-2",
   },
   {
     id: "p-hopeful-2",
@@ -63,21 +84,31 @@ export const POEMS: Poem[] = [
     moods: ["hopeful"],
     lang: "en",
   },
+
+  // --- restless ---
   {
     id: "p-restless-1",
     lines: ["ความคิดยังวิ่งอยู่ก็ปล่อยมันวิ่ง", "เธอไม่ต้องวิ่งตาม", "แค่มองมันจากริมเตียง"],
     attribution: "— บทกวีต้นฉบับ",
     moods: ["restless"],
     lang: "th",
+    pairedWith: "p-restless-2",
+  },
+  {
+    id: "p-restless-2",
+    lines: ["Let the thoughts run.", "You don't have to follow.", "Watch them from the edge of the bed."],
+    attribution: "— original",
+    moods: ["restless"],
+    lang: "en",
   },
 ];
 
 const rand = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-/** Pick a poem that fits the mood. Falls back to any poem if none tagged. */
+/** Pick a Thai poem that fits the mood. The English pair is resolved by PoemCard via pairedWith. */
 export function poemForMood(mood: MoodKey): Poem {
-  const matches = POEMS.filter((p) => p.moods.includes(mood));
-  return matches.length ? rand(matches) : rand(POEMS);
+  const matches = POEMS.filter((p) => p.moods.includes(mood) && p.lang === "th");
+  return matches.length ? rand(matches) : rand(POEMS.filter((p) => p.lang === "th"));
 }
 
 export function moodByKey(key: MoodKey): Mood {
