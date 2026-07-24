@@ -55,9 +55,10 @@ export interface Poem {
 
 export interface MoodEntry {
   id: string;
-  mood: MoodKey;
-  poemId: string;
-  /** AI-written reflection (v2). Undefined until the API is wired up. */
+  /** Absent when the user kept tonight without selecting a mood (visit-only entry) */
+  mood?: MoodKey;
+  /** Absent for visit-only entries */
+  poemId?: string;
   reflection?: string;
   createdAt: number;
 }

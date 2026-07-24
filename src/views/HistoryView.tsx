@@ -31,8 +31,8 @@ export function HistoryView() {
         <>
           <ol className="relative border-l border-line space-y-0">
             {entries.map((entry, i) => {
-              const mood = moodByKey(entry.mood);
-              const poem = POEMS.find((p) => p.id === entry.poemId);
+              const moodData = entry.mood ? moodByKey(entry.mood) : null;
+              const poem = entry.poemId ? POEMS.find((p) => p.id === entry.poemId) : undefined;
 
               return (
                 <motion.li
@@ -42,21 +42,29 @@ export function HistoryView() {
                   transition={{ delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
                   className="relative pl-8 pb-8"
                 >
-                  {/* mood-colored dot on the timeline */}
+                  {/* dot on the timeline — muted for visit-only entries */}
                   <span
                     aria-hidden
                     className="absolute -left-[5px] top-1 w-2.5 h-2.5 rounded-full border-2 border-paper"
-                    style={{ backgroundColor: mood.tint }}
+                    style={{ backgroundColor: moodData ? moodData.tint : "rgb(var(--muted))" }}
                   />
 
                   <div className="space-y-1.5">
                     <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="font-sans text-base text-ink">
-                        {mood.glyph} {mood.labelTh}
-                      </span>
-                      <span className="font-sans text-sm italic text-muted">
-                        · {mood.labelEn}
-                      </span>
+                      {moodData ? (
+                        <>
+                          <span className="font-sans text-base text-ink">
+                            {moodData.glyph} {moodData.labelTh}
+                          </span>
+                          <span className="font-sans text-sm italic text-muted">
+                            · {moodData.labelEn}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="font-display italic text-muted text-sm">
+                          แวะมาคืนนี้ · A quiet visit
+                        </span>
+                      )}
                       <span className="ml-auto font-sans text-xs text-muted">
                         {relativeNight(entry.createdAt)}
                       </span>

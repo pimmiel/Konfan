@@ -7,6 +7,8 @@ interface MoodState {
   entries: MoodEntry[];
   /** Records tonight's mood, picks a matching poem, returns the entry. */
   checkIn: (mood: MoodKey) => MoodEntry;
+  /** Records a mood-less visit (still counts for streak). */
+  visitIn: () => MoodEntry;
   attachReflection: (entryId: string, reflection: string) => void;
   /** consecutive-day streak, for the moon-phase indicator */
   streak: () => number;
@@ -25,6 +27,14 @@ export const useMoodStore = create<MoodState>((set, get) => ({
       poemId: poem.id,
       createdAt: Date.now(),
     };
+    const entries = [entry, ...get().entries];
+    persist(entries);
+    set({ entries });
+    return entry;
+  },
+
+  visitIn: () => {
+    const entry: MoodEntry = { id: crypto.randomUUID(), createdAt: Date.now() };
     const entries = [entry, ...get().entries];
     persist(entries);
     set({ entries });
