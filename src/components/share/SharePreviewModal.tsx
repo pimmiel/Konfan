@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShareCard } from "./ShareCard";
+import type { ShareTheme } from "./ShareCard";
 import { captureAndShare, SHARE_CHAR_LIMIT } from "@/lib/shareImage";
 import type { Passage, Book } from "@/types";
 
@@ -18,6 +19,9 @@ const CAN_NATIVE_SHARE = typeof navigator.share === "function";
 export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [includeNote, setIncludeNote] = useState(false);
+  const [theme, setTheme] = useState<ShareTheme>(() =>
+    document.documentElement.classList.contains("dark") ? "bedtime" : "dusk"
+  );
   const [capturing, setCapturing] = useState(false);
   const [error, setError] = useState(false);
 
@@ -62,6 +66,7 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
           passage={passage}
           book={book}
           includeNote={includeNote}
+          theme={theme}
           cardRef={cardRef}
         />
       </div>
@@ -103,7 +108,7 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
                 width: CARD_W,
               }}
             >
-              <ShareCard passage={passage} book={book} includeNote={includeNote} />
+              <ShareCard passage={passage} book={book} includeNote={includeNote} theme={theme} />
             </div>
           </div>
 
@@ -121,6 +126,30 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
               </p>
             ) : (
               <>
+                {/* Theme toggle — dusk / bedtime */}
+                <div
+                  role="group"
+                  aria-label="เลือกธีมการ์ด"
+                  className="flex rounded-pill border border-line overflow-hidden w-full"
+                >
+                  {(["dusk", "bedtime"] as ShareTheme[]).map((t) => (
+                    <button
+                      key={t}
+                      aria-pressed={theme === t}
+                      onClick={() => setTheme(t)}
+                      className={
+                        "flex-1 flex items-center justify-center gap-1.5 py-1.5 font-sans text-xs transition-colors duration-300 ease-calm " +
+                        (theme === t
+                          ? "bg-honey text-plum-deep font-medium"
+                          : "text-muted hover:text-ink")
+                      }
+                    >
+                      <span aria-hidden>{t === "dusk" ? "☀️" : "🌙"}</span>
+                      <span>{t === "dusk" ? "สว่าง" : "มืด"}</span>
+                    </button>
+                  ))}
+                </div>
+
                 {/* Note toggle — hidden when passage has no note */}
                 {passage.note && (
                   <button
