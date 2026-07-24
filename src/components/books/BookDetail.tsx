@@ -4,6 +4,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow, Body } from "@/components/ui/Typography";
 import { SharePreviewModal } from "@/components/share/SharePreviewModal";
+import { SHARE_CHAR_LIMIT } from "@/lib/shareImage";
 import { usePassageStore } from "@/store/usePassageStore";
 import { relativeTime } from "@/lib/relativeTime";
 import type { Book, Passage } from "@/types";
@@ -85,7 +86,12 @@ export function BookDetail({ book, onClose }: BookDetailProps) {
                       <button
                         onClick={() => setSharingPassage(p)}
                         aria-label="แชร์ประโยคนี้ · Share this line"
-                        className="p-1.5 rounded-pill text-muted hover:text-honey transition-colors duration-300 ease-calm"
+                        className={
+                          "p-1.5 rounded-pill transition-colors duration-300 ease-calm " +
+                          (p.text.length > SHARE_CHAR_LIMIT
+                            ? "text-muted opacity-40"
+                            : "text-muted hover:text-honey")
+                        }
                       >
                         <ShareIcon />
                       </button>

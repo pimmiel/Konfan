@@ -1,5 +1,8 @@
 import { toBlob } from "html-to-image";
 
+/** Passages longer than this are kept privately but can't be shared — fair use boundary. */
+export const SHARE_CHAR_LIMIT = 320;
+
 /**
  * Captures a mounted DOM node as a PNG, then shares it via Web Share API
  * (mobile) or falls back to a direct download (desktop / unsupported).
