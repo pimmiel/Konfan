@@ -10,15 +10,14 @@ interface SharePreviewModalProps {
   onClose: () => void;
 }
 
-// Card renders at 1080 × 1920; scale it down for the in-app preview
 const CARD_W = 1080;
 const PREVIEW_W = 268;
 
-// Heuristic: mobile browsers expose navigator.share; desktop generally doesn't
 const CAN_NATIVE_SHARE = typeof navigator.share === "function";
 
 export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
+  const [includeNote, setIncludeNote] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const [error, setError] = useState(false);
 
@@ -32,9 +31,7 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
     try {
       await captureAndShare(cardRef.current);
     } catch (err) {
-      // User cancelled the native share sheet — not a real error
-      const isCancelled =
-        err instanceof Error && err.name === "AbortError";
+      const isCancelled = err instanceof Error && err.name === "AbortError";
       if (!isCancelled) setError(true);
     } finally {
       setCapturing(false);
@@ -47,7 +44,7 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
 
   return (
     <AnimatePresence>
-      {/* Off-screen full-size card — mounted so html-to-image can rasterize it */}
+      {/* Off-screen full-size card for image capture — reflects live toggle */}
       <div
         aria-hidden
         style={{
@@ -60,7 +57,12 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
           zIndex: -1,
         }}
       >
-        <ShareCard passage={passage} book={book} cardRef={cardRef} />
+        <ShareCard
+          passage={passage}
+          book={book}
+          includeNote={includeNote}
+          cardRef={cardRef}
+        />
       </div>
 
       <motion.div
@@ -81,7 +83,7 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
           onClick={(e) => e.stopPropagation()}
           className="flex flex-col items-center gap-5"
         >
-          {/* Scaled preview */}
+          {/* Live preview — updates as toggle changes */}
           <div
             style={{
               width: PREVIEW_W,
@@ -100,20 +102,53 @@ export function SharePreviewModal({ passage, book, onClose }: SharePreviewModalP
                 width: CARD_W,
               }}
             >
-              <ShareCard passage={passage} book={book} />
+              <ShareCard passage={passage} book={book} includeNote={includeNote} />
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="flex flex-col items-center gap-2 w-full max-w-[200px]">
+          {/* Controls */}
+          <div className="flex flex-col items-center gap-3 w-full max-w-[220px]">
+            {/* Note toggle — hidden when passage has no note */}
+            {passage.note && (
+              <button
+                role="switch"
+                aria-checked={includeNote}
+                onClick={() => setIncludeNote((v) => !v)}
+                className="flex items-center gap-2.5 w-full group"
+              >
+                {/* Track */}
+                <span
+                  className={
+                    "relative inline-flex h-5 w-9 shrink-0 rounded-pill border " +
+                    "transition-colors duration-300 ease-calm " +
+                    (includeNote
+                      ? "bg-honey border-honey"
+                      : "bg-transparent border-line group-hover:border-sage")
+                  }
+                >
+                  {/* Thumb */}
+                  <span
+                    className={
+                      "absolute top-0.5 h-4 w-4 rounded-full transition-all duration-300 ease-calm " +
+                      (includeNote
+                        ? "left-[18px] bg-plum-deep"
+                        : "left-0.5 bg-muted group-hover:bg-ink")
+                    }
+                  />
+                </span>
+                <span className="font-sans text-xs text-muted group-hover:text-ink transition-colors duration-300 ease-calm text-left leading-snug">
+                  ใส่โน้ตของฉันด้วย · Include my note
+                </span>
+              </button>
+            )}
+
             <button
               onClick={handleShare}
               disabled={capturing}
               className={
                 "w-full font-sans text-sm font-medium rounded-pill px-6 py-2.5 " +
                 "bg-honey text-plum-deep transition-all duration-300 ease-calm " +
-                "disabled:opacity-50 disabled:pointer-events-none " +
-                "hover:bg-honey-deep"
+                "disabled:opacity-50 disabled:pointer-events-none hover:bg-honey-deep"
               }
             >
               {capturing ? "กำลังสร้างรูป…" : shareLabel}
