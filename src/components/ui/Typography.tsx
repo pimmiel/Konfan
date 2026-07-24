@@ -20,7 +20,7 @@ export function Display({ children, className = "", ...p }: TextProps) {
 export function Eyebrow({ children, className = "", ...p }: TextProps) {
   return (
     <span
-      className={`font-sans text-xs uppercase tracking-[0.2em] text-muted ${className}`}
+      className={`font-sans text-xs uppercase tracking-[0.2em] text-muted select-none ${className}`}
       {...p}
     >
       {children}
