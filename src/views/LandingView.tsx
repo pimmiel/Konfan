@@ -61,7 +61,7 @@ export function LandingView({ onBegin, onAbout }: LandingViewProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1, ease: EASE }}
       >
-        <Eyebrow>ก่อนฝัน · before dream</Eyebrow>
+        <Eyebrow>before dream</Eyebrow>
       </motion.div>
 
       <motion.div
