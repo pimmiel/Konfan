@@ -4,6 +4,7 @@ import { Eyebrow } from "@/components/ui/Typography";
 
 interface LandingViewProps {
   onBegin: () => void;
+  onAbout: () => void;
 }
 
 function Candle() {
@@ -52,7 +53,7 @@ const FEATURES = [
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export function LandingView({ onBegin }: LandingViewProps) {
+export function LandingView({ onBegin, onAbout }: LandingViewProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-16 text-center gap-8">
       <motion.div
@@ -118,6 +119,19 @@ export function LandingView({ onBegin }: LandingViewProps) {
             <span className="font-sans text-xs text-muted">{f.label}</span>
           </div>
         ))}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6, ease: EASE }}
+      >
+        <button
+          onClick={onAbout}
+          className="font-sans text-xs text-muted/60 hover:text-muted transition-colors duration-300 ease-calm"
+        >
+          เกี่ยวกับ · About
+        </button>
       </motion.div>
     </div>
   );

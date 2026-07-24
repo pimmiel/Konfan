@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/Button";
 import { Nav } from "@/components/layout/Nav";
 import { StarField } from "@/components/layout/StarField";
 import { LandingView } from "@/views/LandingView";
+import { AboutView } from "@/views/AboutView";
 import { TonightView } from "@/views/TonightView";
 import { LibraryView } from "@/views/LibraryView";
 import { HistoryView } from "@/views/HistoryView";
 import { load, save, STORAGE_KEYS } from "@/lib/storage";
 import type { View } from "@/components/layout/Nav";
 
-type Page = "landing" | "app";
+type Page = "landing" | "app" | "about";
 
 const EASE = { ease: [0.22, 1, 0.36, 1] as const, duration: 0.25 };
 
@@ -44,7 +45,17 @@ export function AppShell() {
             exit={{ opacity: 0 }}
             transition={EASE}
           >
-            <LandingView onBegin={handleBegin} />
+            <LandingView onBegin={handleBegin} onAbout={() => setPage("about")} />
+          </motion.div>
+        ) : page === "about" ? (
+          <motion.div
+            key="about"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={EASE}
+          >
+            <AboutView onBack={() => setPage("landing")} />
           </motion.div>
         ) : (
           <motion.div
