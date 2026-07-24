@@ -6,17 +6,13 @@ import { Eyebrow } from "@/components/ui/Typography";
 interface Props {
   selected?: MoodKey;
   onSelect: (mood: MoodKey) => void;
+  eyebrow?: string;
 }
 
-/**
- * The signature moment: five petals arranged in a soft arc. Choosing one
- * warms the whole room (App reads `selected` and shifts an ambient tint).
- * This is the interaction the app is remembered by — keep it tactile.
- */
-export function MoodPicker({ selected, onSelect }: Props) {
+export function MoodPicker({ selected, onSelect, eyebrow }: Props) {
   return (
     <div className="flex flex-col items-center gap-5">
-      <Eyebrow>คืนนี้ใจเธอเป็นยังไง</Eyebrow>
+      <Eyebrow>{eyebrow ?? "คืนนี้ใจเธอเป็นยังไง"}</Eyebrow>
       <div className="flex flex-wrap justify-center gap-3">
         {MOODS.map((mood, i) => {
           const active = selected === mood.key;

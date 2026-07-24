@@ -11,13 +11,42 @@ import { useBookStore } from "@/store/useBookStore";
 import { POEMS, moodByKey } from "@/lib/poems";
 import type { MoodKey } from "@/types";
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+const TEXTAREA = [
+  "w-full resize-none bg-transparent border border-line rounded-card px-4 py-3",
+  "text-ink placeholder:text-muted font-sans text-base",
+  "focus:outline-none focus:ring-2 focus:ring-honey focus:border-honey",
+  "transition-colors duration-300 ease-calm",
+].join(" ");
+
 export function TonightView() {
   const [mood, setMood] = useState<MoodKey | undefined>();
   const [poemId, setPoemId] = useState<string | undefined>();
   const [entryId, setEntryId] = useState<string | undefined>();
+
+  // Passage state — lifted here so it feeds into ReflectionCard on save
+  const [passageOpen, setPassageOpen] = useState(true);
+  const [passageText, setPassageText] = useState("");
+  const [passagePage, setPassagePage] = useState("");
+  const [passageNote, setPassageNote] = useState("");
+
   const checkIn = useMoodStore((s) => s.checkIn);
   const streak = useMoodStore((s) => s.streak)();
-  const currentBook = useBookStore((s) => s.books.find((b) => b.status === "reading"));
+
+  const books = useBookStore((s) => s.books);
+  const activeBookId = useBookStore((s) => s.activeBookId);
+  const setActiveBook = useBookStore((s) => s.setActiveBook);
+
+  const readingBooks = books.filter((b) => b.status === "reading");
+  const activeBook = readingBooks.find((b) => b.id === activeBookId) ?? readingBooks[0];
+
+  const cycleBook = () => {
+    if (readingBooks.length < 2 || !activeBook) return;
+    const idx = readingBooks.findIndex((b) => b.id === activeBook.id);
+    const next = readingBooks[(idx + 1) % readingBooks.length];
+    setActiveBook(next.id);
+  };
 
   const onSelect = (m: MoodKey) => {
     const entry = checkIn(m);
@@ -28,6 +57,17 @@ export function TonightView() {
 
   const poem = poemId ? POEMS.find((p) => p.id === poemId) : undefined;
   const tint = mood ? moodByKey(mood).tint : undefined;
+
+  const passageData =
+    passageOpen && passageText.trim() && activeBook
+      ? {
+          bookId: activeBook.id,
+          text: passageText.trim(),
+          page: passagePage ? parseInt(passagePage, 10) : undefined,
+          note: passageNote.trim() || undefined,
+          mood,
+        }
+      : undefined;
 
   return (
     <>
@@ -50,17 +90,94 @@ export function TonightView() {
           <Eyebrow>คืนนี้</Eyebrow>
           <Display>ปิดวันด้วยลมหายใจช้าๆ</Display>
           <p className="font-display italic text-muted text-base">Close the day with a slow breath</p>
-          {currentBook && (
-            <div className="flex items-center justify-center gap-2 pt-1">
-              <Eyebrow>กำลังอ่าน</Eyebrow>
-              <span className="font-sans text-sm text-honey truncate max-w-xs">
-                {currentBook.title}
-              </span>
-            </div>
-          )}
         </div>
 
-        <MoodPicker selected={mood} onSelect={onSelect} />
+        {/* Passage section — comes first, only when reading a book */}
+        {activeBook && (
+          <div className="w-full max-w-md flex flex-col gap-3 text-left">
+            <Eyebrow className="text-center">
+              คืนนี้มีประโยคไหนอยู่กับเธอไหม · Did a line stay with you tonight?
+            </Eyebrow>
+
+            <AnimatePresence>
+              {passageOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ ease: EASE, duration: 0.35 }}
+                  className="flex flex-col gap-3 overflow-hidden"
+                >
+                  {/* Book label */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-sans text-xs text-muted">จาก ·</span>
+                    <button
+                      onClick={cycleBook}
+                      className={
+                        "font-sans text-xs text-honey truncate max-w-[220px] " +
+                        (readingBooks.length > 1
+                          ? "underline underline-offset-2 hover:opacity-80"
+                          : "cursor-default")
+                      }
+                      disabled={readingBooks.length < 2}
+                      title={readingBooks.length > 1 ? "แตะเพื่อเปลี่ยนเล่ม" : undefined}
+                    >
+                      {activeBook.title}
+                    </button>
+                  </div>
+
+                  <textarea
+                    value={passageText}
+                    onChange={(e) => setPassageText(e.target.value)}
+                    rows={3}
+                    placeholder="พิมพ์ประโยคที่อยากเก็บ…"
+                    className={TEXTAREA}
+                  />
+
+                  <div className="flex gap-3">
+                    <input
+                      type="number"
+                      value={passagePage}
+                      onChange={(e) => setPassagePage(e.target.value)}
+                      placeholder="หน้า (ไม่บังคับ)"
+                      className={
+                        "w-32 bg-transparent border border-line rounded-card px-3 py-2 " +
+                        "font-sans text-sm text-ink placeholder:text-muted " +
+                        "focus:outline-none focus:ring-2 focus:ring-honey focus:border-honey " +
+                        "transition-colors duration-300 ease-calm"
+                      }
+                    />
+                  </div>
+
+                  <textarea
+                    value={passageNote}
+                    onChange={(e) => setPassageNote(e.target.value)}
+                    rows={2}
+                    placeholder="ทำไมมันโดน · why it stayed with you (ไม่บังคับ)"
+                    className={TEXTAREA}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="flex justify-center">
+              <button
+                onClick={() => setPassageOpen((o) => !o)}
+                className="font-sans text-xs text-muted hover:text-ink transition-colors duration-300 ease-calm"
+              >
+                {passageOpen
+                  ? "ไม่มีคืนนี้ · Not tonight"
+                  : "+ เพิ่มประโยค · Add a line"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        <MoodPicker
+          selected={mood}
+          onSelect={onSelect}
+          eyebrow="แล้วใจเธอคืนนี้เป็นยังไง · and how does tonight feel?"
+        />
 
         <AnimatePresence mode="wait">
           {poem && (
@@ -88,7 +205,12 @@ export function TonightView() {
               transition={{ delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="w-full max-w-md"
             >
-              <ReflectionCard entryId={entryId} mood={mood} />
+              <ReflectionCard
+                entryId={entryId}
+                mood={mood}
+                passageData={passageData}
+                passageBookTitle={activeBook?.title}
+              />
             </motion.div>
           )}
         </AnimatePresence>
