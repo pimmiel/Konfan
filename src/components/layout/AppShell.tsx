@@ -22,10 +22,12 @@ export function AppShell() {
   const [bedtime, setBedtime] = useState<boolean>(() =>
     load<boolean>(STORAGE_KEYS.theme, true)
   );
+  const [dimming, setDimming] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", bedtime);
     save(STORAGE_KEYS.theme, bedtime);
+    if (!bedtime) setDimming(false);
   }, [bedtime]);
 
   const handleBegin = () => {
@@ -33,8 +35,21 @@ export function AppShell() {
     setPage("app");
   };
 
+  const handleNavChange = (v: View) => {
+    setDimming(false);
+    setView(v);
+  };
+
+  // Called by TonightView after "เก็บค่ำคืนนี้" — only dims in bedtime mode
+  const handleKept = () => {
+    if (bedtime) setDimming(true);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div
+      className="min-h-screen flex flex-col"
+      onClick={dimming ? () => setDimming(false) : undefined}
+    >
       <StarField />
 
       {/* Persistent header — visible on every page */}
@@ -95,17 +110,26 @@ export function AppShell() {
           >
             <AnimatePresence mode="wait">
               <motion.div key={view} className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
-                {view === "tonight" && <TonightView />}
+                {view === "tonight" && <TonightView onKept={handleKept} />}
                 {view === "library" && <LibraryView />}
                 {view === "kept" && <KeptView />}
                 {view === "history" && <HistoryView />}
               </motion.div>
             </AnimatePresence>
 
-            <Nav current={view} onChange={setView} />
+            <Nav current={view} onChange={handleNavChange} />
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Bedtime dim overlay — fades in over 60s after keeping tonight */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-50 bg-black"
+        initial={false}
+        animate={{ opacity: dimming ? 0.82 : 0 }}
+        transition={{ duration: dimming ? 60 : 1, ease: "linear" }}
+      />
     </div>
   );
 }

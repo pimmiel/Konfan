@@ -24,7 +24,11 @@ const TEXTAREA = [
   "transition-colors duration-300 ease-calm",
 ].join(" ");
 
-export function TonightView() {
+interface TonightViewProps {
+  onKept?: () => void;
+}
+
+export function TonightView({ onKept }: TonightViewProps) {
   // ── Store access ───────────────────────────────────────────────────────────
   const entries   = useMoodStore((s) => s.entries);
   const keepTonight = useMoodStore((s) => s.keepTonight);
@@ -106,6 +110,7 @@ export function TonightView() {
     }
 
     setPhase("closed");
+    onKept?.();
   };
 
   const handleEdit = () => {
