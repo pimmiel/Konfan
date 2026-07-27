@@ -1,16 +1,20 @@
 import { motion } from "framer-motion";
+import { Flame, BookOpen, Bookmark, ScrollText, type LucideIcon } from "lucide-react";
 
-export type View = "tonight" | "library" | "history";
+export type View = "tonight" | "library" | "kept" | "history";
 
 interface NavProps {
   current: View;
   onChange: (view: View) => void;
 }
 
-const tabs: { id: View; glyph: string; label: string }[] = [
-  { id: "tonight", glyph: "🕯️", label: "คืนนี้" },
-  { id: "library", glyph: "📚", label: "ชั้นหนังสือ" },
-  { id: "history", glyph: "🌙", label: "บันทึก" },
+const EASE = [0.22, 1, 0.36, 1] as const;
+
+const tabs: { id: View; Icon: LucideIcon; label: string }[] = [
+  { id: "tonight", Icon: Flame,      label: "คืนนี้" },
+  { id: "library", Icon: BookOpen,   label: "ชั้นหนังสือ" },
+  { id: "kept",    Icon: Bookmark,   label: "คำที่เก็บไว้" },
+  { id: "history", Icon: ScrollText, label: "บันทึก" },
 ];
 
 export function Nav({ current, onChange }: NavProps) {
@@ -38,15 +42,13 @@ export function Nav({ current, onChange }: NavProps) {
                 (active ? "text-honey font-medium" : "text-muted hover:text-ink")
               }
             >
-              <span className="text-lg" aria-hidden>
-                {tab.glyph}
-              </span>
+              <tab.Icon size={22} strokeWidth={1.5} aria-hidden />
               <span>{tab.label}</span>
               {active && (
                 <motion.div
                   layoutId="nav-indicator"
                   className="w-1 h-1 rounded-full bg-honey"
-                  transition={{ ease: [0.22, 1, 0.36, 1], duration: 0.3 }}
+                  transition={{ ease: EASE, duration: 0.3 }}
                 />
               )}
               {!active && <div className="w-1 h-1" aria-hidden />}

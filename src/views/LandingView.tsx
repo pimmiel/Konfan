@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
+import { Flame, BookOpen, Moon, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Typography";
+import { usePassageStore } from "@/store/usePassageStore";
+import { DEMO_PASSAGES } from "@/lib/demoPassages";
 
 interface LandingViewProps {
   onBegin: () => void;
@@ -45,15 +48,19 @@ function Candle() {
   );
 }
 
-const FEATURES = [
-  { glyph: "🕯️", label: "เช็คอินอารมณ์" },
-  { glyph: "📖", label: "ชั้นหนังสือ" },
-  { glyph: "🌙", label: "reflection ปิดวัน" },
+const FEATURES: { Icon: LucideIcon; label: string }[] = [
+  { Icon: Flame,    label: "เช็คอินอารมณ์" },
+  { Icon: BookOpen, label: "ชั้นหนังสือ" },
+  { Icon: Moon,     label: "reflection ปิดวัน" },
 ];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
+const DEMO = DEMO_PASSAGES[0];
+
 export function LandingView({ onBegin, onAbout }: LandingViewProps) {
+  const hasPassages = usePassageStore((s) => s.passages.length > 0);
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center gap-8">
       <motion.div
@@ -97,10 +104,27 @@ export function LandingView({ onBegin, onAbout }: LandingViewProps) {
         <p className="font-display italic text-muted">A quiet moment before you close your eyes</p>
       </motion.div>
 
+      {!hasPassages && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.95, ease: EASE }}
+          className="w-full max-w-xs text-center space-y-1.5"
+        >
+          <Eyebrow>ตัวอย่าง · a glimpse</Eyebrow>
+          <p className="font-display text-xl text-ink leading-relaxed">
+            {DEMO.text}
+          </p>
+          <p className="font-sans text-xs text-muted">
+            — จาก {DEMO.bookTitle}
+          </p>
+        </motion.div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.0, ease: EASE }}
+        transition={{ delay: hasPassages ? 0.85 : 1.0, ease: EASE }}
       >
         <Button variant="primary" size="md" onClick={onBegin}>
           เริ่มค่ำคืนนี้ · Begin tonight
@@ -110,12 +134,12 @@ export function LandingView({ onBegin, onAbout }: LandingViewProps) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.3, ease: EASE }}
+        transition={{ delay: hasPassages ? 1.05 : 1.3, ease: EASE }}
         className="flex items-start justify-center gap-10 pt-2"
       >
         {FEATURES.map((f) => (
           <div key={f.label} className="flex flex-col items-center gap-2">
-            <span className="text-2xl" aria-hidden>{f.glyph}</span>
+            <f.Icon size={26} strokeWidth={1.5} aria-hidden className="text-muted" />
             <span className="font-sans text-xs text-muted">{f.label}</span>
           </div>
         ))}
@@ -124,7 +148,7 @@ export function LandingView({ onBegin, onAbout }: LandingViewProps) {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.6, ease: EASE }}
+        transition={{ delay: hasPassages ? 1.25 : 1.6, ease: EASE }}
       >
         <button
           onClick={onAbout}

@@ -7,6 +7,7 @@ import { LandingView } from "@/views/LandingView";
 import { AboutView } from "@/views/AboutView";
 import { TonightView } from "@/views/TonightView";
 import { LibraryView } from "@/views/LibraryView";
+import { KeptView } from "@/views/KeptView";
 import { HistoryView } from "@/views/HistoryView";
 import { load, save, STORAGE_KEYS } from "@/lib/storage";
 import type { View } from "@/components/layout/Nav";
@@ -19,7 +20,7 @@ export function AppShell() {
   const [page, setPage] = useState<Page>("landing");
   const [view, setView] = useState<View>("tonight");
   const [bedtime, setBedtime] = useState<boolean>(() =>
-    load<boolean>(STORAGE_KEYS.theme, false)
+    load<boolean>(STORAGE_KEYS.theme, true)
   );
 
   useEffect(() => {
@@ -93,21 +94,12 @@ export function AppShell() {
             transition={EASE}
           >
             <AnimatePresence mode="wait">
-              {view === "tonight" && (
-                <motion.div key="tonight" className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
-                  <TonightView />
-                </motion.div>
-              )}
-              {view === "library" && (
-                <motion.div key="library" className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
-                  <LibraryView />
-                </motion.div>
-              )}
-              {view === "history" && (
-                <motion.div key="history" className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
-                  <HistoryView />
-                </motion.div>
-              )}
+              <motion.div key={view} className="flex-1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={EASE}>
+                {view === "tonight" && <TonightView />}
+                {view === "library" && <LibraryView />}
+                {view === "kept" && <KeptView />}
+                {view === "history" && <HistoryView />}
+              </motion.div>
             </AnimatePresence>
 
             <Nav current={view} onChange={setView} />
