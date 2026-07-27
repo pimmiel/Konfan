@@ -16,6 +16,9 @@ type Page = "landing" | "app" | "about";
 
 const EASE = { ease: [0.22, 1, 0.36, 1] as const, duration: 0.25 };
 
+const IDLE_BEFORE_DIM = 0;   // seconds before fade begins
+const FADE_DURATION   = 20;  // seconds to reach full dim
+
 export function AppShell() {
   const [page, setPage] = useState<Page>("landing");
   const [view, setView] = useState<View>("tonight");
@@ -122,13 +125,16 @@ export function AppShell() {
         )}
       </AnimatePresence>
 
-      {/* Bedtime dim overlay — fades in over 60s after keeping tonight */}
+      {/* Bedtime dim overlay — fades in after keeping tonight */}
       <motion.div
         aria-hidden
         className="pointer-events-none fixed inset-0 z-50 bg-black"
         initial={false}
         animate={{ opacity: dimming ? 0.82 : 0 }}
-        transition={{ duration: dimming ? 60 : 1, ease: "linear" }}
+        transition={dimming
+          ? { duration: FADE_DURATION, delay: IDLE_BEFORE_DIM, ease: "easeInOut" }
+          : { duration: 1, ease: "easeOut" }
+        }
       />
     </div>
   );
