@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { Book } from "@/types";
 import { load, save, STORAGE_KEYS } from "@/lib/storage";
+import { usePassageStore } from "@/store/usePassageStore";
 
 interface BookState {
   books: Book[];
@@ -82,6 +83,7 @@ export const useBookStore = create<BookState>((set, get) => {
         persistActive(activeBookId);
       }
 
+      usePassageStore.getState().removeByBook(id);
       set({ books, activeBookId });
     },
 

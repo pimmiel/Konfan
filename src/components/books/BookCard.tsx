@@ -7,6 +7,7 @@ import { Body } from "@/components/ui/Typography";
 import { ReadingProgress } from "@/components/books/ReadingProgress";
 import { BookDetail } from "@/components/books/BookDetail";
 import { ClosingCeremonyModal } from "@/components/books/ClosingCeremonyModal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { useBookStore } from "@/store/useBookStore";
 import { usePassageStore } from "@/store/usePassageStore";
 import type { Book } from "@/types";
@@ -22,6 +23,7 @@ export function BookCard({ book, index = 0 }: BookCardProps) {
   const [draft, setDraft] = useState(String(book.currentPage));
   const [showDetail, setShowDetail] = useState(false);
   const [showCeremony, setShowCeremony] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const commitProgress = () => {
     const parsed = parseInt(draft, 10);
@@ -114,7 +116,7 @@ export function BookCard({ book, index = 0 }: BookCardProps) {
                   <Button
                     variant="quiet"
                     size="sm"
-                    onClick={() => remove(book.id)}
+                    onClick={() => setShowDeleteConfirm(true)}
                     aria-label={`ลบ ${book.title}`}
                   >
                     ลบ
@@ -139,7 +141,7 @@ export function BookCard({ book, index = 0 }: BookCardProps) {
                 <Button
                   variant="quiet"
                   size="sm"
-                  onClick={() => remove(book.id)}
+                  onClick={() => setShowDeleteConfirm(true)}
                   aria-label={`ลบ ${book.title}`}
                 >
                   ลบ
@@ -160,6 +162,21 @@ export function BookCard({ book, index = 0 }: BookCardProps) {
             book={book}
             onClose={() => setShowCeremony(false)}
             onConfirm={handleConfirmFinish}
+          />
+        )}
+        {showDeleteConfirm && (
+          <ConfirmDialog
+            title={`ลบ "${book.title}" ไหม?`}
+            warning={
+              passageCount > 0
+                ? `ประโยคที่เก็บจากเล่มนี้ ${passageCount} ประโยคจะหายไปด้วย`
+                : undefined
+            }
+            onConfirm={() => {
+              remove(book.id);
+              setShowDeleteConfirm(false);
+            }}
+            onClose={() => setShowDeleteConfirm(false)}
           />
         )}
       </AnimatePresence>

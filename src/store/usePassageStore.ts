@@ -6,6 +6,7 @@ interface PassageState {
   passages: Passage[];
   add: (input: Omit<Passage, "id" | "createdAt">) => Passage;
   remove: (id: string) => void;
+  removeByBook: (bookId: string) => void;
   byBook: (bookId: string) => Passage[];
   forResurfacing: () => Passage | null;
 }
@@ -29,6 +30,12 @@ export const usePassageStore = create<PassageState>((set, get) => ({
 
   remove: (id) => {
     const passages = get().passages.filter((p) => p.id !== id);
+    persist(passages);
+    set({ passages });
+  },
+
+  removeByBook: (bookId) => {
+    const passages = get().passages.filter((p) => p.bookId !== bookId);
     persist(passages);
     set({ passages });
   },
