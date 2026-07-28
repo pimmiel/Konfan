@@ -94,7 +94,7 @@ export function AboutView({ onBack }: AboutViewProps) {
       <div className="pt-4 border-t border-line space-y-1">
         <p className="font-sans text-xs text-muted">
           ปรับปรุงล่าสุด · Last updated:{" "}
-          <span className="italic">24 ก.ค. 2569 · 24 Jul 2025</span>
+          <span className="italic">24 ก.ค. 2569 · 24 Jul 2026</span>
         </p>
         <p className="font-sans text-xs text-muted/60 leading-relaxed">
           ร่างนี้ยังไม่ผ่านการรีวิวจากนักกฎหมาย ก่อนเผยแพร่กับผู้ใช้จำนวนมากควรปรึกษาผู้เชี่ยวชาญด้านทรัพย์สินทางปัญญา/PDPA
